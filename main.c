@@ -4,6 +4,12 @@
 
 #define SLAVE_ADDR_AXP192   "34" /* https://github.com/m5stack/M5-Schematic/blob/master/Core/AXP192%20Datasheet_v1.1_en_draft_2211.pdf */
 
+void sleep(int frame) {
+  unsigned int* timer = (unsigned int*)0xfc9e;
+  *timer = 0;
+  while(*timer < frame);
+}
+
 int init(char* addr) {
   int num = iotfindi("device/i2c_i");
   if (num == -1) { return -1; }
@@ -36,5 +42,6 @@ int main( int argc, char *argv[]) {
   buff[0] = 0x12;
   buff[1] = get;
   ret     = iotputb("device/i2c_i" SLAVE_ADDR_AXP192, buff, 2);
+  sleep(120);
   return 0;
 }
