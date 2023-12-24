@@ -2,6 +2,9 @@
 #include <string.h>
 #include "libiot.h"
 
+/* porting from */
+/* https://github.com/Ninune-wa/MSX0-Sensor-Utility/tree/main/MSX0Stack-VibrationMotor */
+
 #define SLAVE_ADDR_AXP192   "34" /* https://github.com/m5stack/M5-Schematic/blob/master/Core/AXP192%20Datasheet_v1.1_en_draft_2211.pdf */
 
 int init(char* addr) {
@@ -21,6 +24,12 @@ int init(char* addr) {
   }
   free(str);
   return found;
+}
+
+void sleep(int frame) {
+  unsigned int* timer = (unsigned int*)0xfc9e;
+  *timer = 0;
+  while(*timer < frame);
 }
 
 int main( int argc, char *argv[]) {
@@ -54,5 +63,6 @@ int main( int argc, char *argv[]) {
   buff[1] = get[0];
   buff[2] = 0;
   ret     = iotputs("device/i2c_i" SLAVE_ADDR_AXP192, buff);
+  sleep(120);
   return 0;
 }
