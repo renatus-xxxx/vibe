@@ -37,32 +37,23 @@ int main( int argc, char *argv[]) {
     printf("AXP192(0x%s) not found.", SLAVE_ADDR_AXP192);
     return -1;
   }
-  unsigned char send[8];
-  send[0] = 0x12;
-  send[1] = 0;
-  printf("send = [%s]\n", send);
-//  int ret = iotputs("device/i2c_i" SLAVE_ADDR_AXP192, send);
-  int ret = iotputb("device/i2c_i" SLAVE_ADDR_AXP192, send, 2);
-  printf("ret=%d\n", ret);
-  unsigned char get[8];
+  unsigned char send = 0x12;
+  int ret = iotputb("device/i2c_i" SLAVE_ADDR_AXP192, send, 1);
+  unsigned char get[8]; // o:119, x:128
   for(int i = 0; i < 8; i++) {
     get[i] = 0;
   }
   iotgetb("device/i2c_i" SLAVE_ADDR_AXP192, get);
-  //get[0] = iotgeti("device/i2c_i" SLAVE_ADDR_AXP192);
   for(int i = 0; i < 8; i++) {
     printf("get[%d]=%d\n", i, get[i]);
   }
-  //printf("get=%d\n", get[0]);
-  //get = 119; // force
-  //get |= 0b00001000; // o:119, x:0
-  //get += 8;
   get[0] |= (1 << 3);
+  printf("get[0]=%d\n", get[0]);
   unsigned char buff[8];
   buff[0] = 0x12;
   buff[1] = get[0];
   buff[2] = 0;
-  ret     = iotputs("device/i2c_i" SLAVE_ADDR_AXP192, buff);
-  sleep(120);
+  ret     = iotputb("device/i2c_i" SLAVE_ADDR_AXP192, buff, 2);
+  printf("ret=%d\n", i, ret);
   return 0;
 }
