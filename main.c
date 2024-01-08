@@ -36,11 +36,7 @@ int main( int argc, char *argv[]) {
   buff[1] = 0;
   int ret = iotputs("device/i2c_i/" SLAVE_ADDR_AXP192, buff);
   unsigned char get = (unsigned char)iotgeti("device/i2c_i/" SLAVE_ADDR_AXP192);
-  if (argc < 2) {
-    get |=  (1 << 3); // on
-  } else {
-    get &= ~(1 << 3); // off
-  }
+  get ^=  (1 << 3); // (on/off) toggle
   buff[0] = 0x12;
   buff[1] = get;
   buff[2] = 0;
