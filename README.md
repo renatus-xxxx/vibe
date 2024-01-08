@@ -1,8 +1,11 @@
 ## vibe
 MSX0Stack-VibrationMotor toggle tool on MSX0
 
-## usage
-vibe.com
+## how to use
+```
+usage:
+  VIBE (toggle vibration motor on MSX0)
+```
 
 ## thanks
 Porting from [MSX0-Sensor-Utility/MSX0Stack-VibrationMotor](https://github.com/Ninune-wa/MSX0-Sensor-Utility/tree/main/MSX0Stack-VibrationMotor)
