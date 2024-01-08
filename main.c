@@ -5,7 +5,7 @@
 /* porting from */
 /* https://github.com/Ninune-wa/MSX0-Sensor-Utility/tree/main/MSX0Stack-VibrationMotor */
 
-#define SLAVE_ADDR_AXP192   "34" /* https://github.com/m5stack/M5-Schematic/blob/master/Core/AXP192%20Datasheet_v1.1_en_draft_2211.pdf */
+#define SLAVE_ADDR_AXP192 "34" /* https://github.com/m5stack/M5-Schematic/blob/master/Core/AXP192%20Datasheet_v1.1_en_draft_2211.pdf */
 
 int init(char* addr) {
   int num = iotfindi("device/i2c_i");
@@ -26,37 +26,26 @@ int init(char* addr) {
   return found;
 }
 
-void frame_sleep(int frame) {
-  unsigned int* timer = (unsigned int*)0xfc9e;
-  *timer = 0;
-  while(*timer < frame);
-}
-
 int main( int argc, char *argv[]) {
   if (init(SLAVE_ADDR_AXP192)) {
     printf("AXP192(0x%s) not found.", SLAVE_ADDR_AXP192);
     return -1;
   }
-  frame_sleep(60);
-  unsigned char send = 0x12;
-  int ret = iotputb("device/i2c_i/" SLAVE_ADDR_AXP192, send, 1);
-  unsigned char get[8]; // o:119, x:128
-  for(int i = 0; i < 8; i++) {
-    get[i] = 0;
-  }
-  frame_sleep(60);
-  iotgetb("device/i2c_i/" SLAVE_ADDR_AXP192, get);
-  for(int i = 0; i < 8; i++) {
-    printf("get[%d]=%d\n", i, get[i]);
-  }
-  get[0] |= (1 << 3);
-  printf("get[0]=%d\n", get[0]);
-  unsigned char buff[8];
+  unsigned char buff[16];
   buff[0] = 0x12;
-  buff[1] = get[0];
+  buff[1] = 0;
+  int ret = iotputs("device/i2c_i/" SLAVE_ADDR_AXP192, buff);
+  unsigned char get;
+  ret = iotgeti("device/i2c_i/" SLAVE_ADDR_AXP192);
+  get = (unsigned char)ret;
+  if (argc < 2) {
+    get |=  (1 << 3); // on
+  } else {
+    get &= ~(1 << 3); // off
+  }
+  buff[0] = 0x12;
+  buff[1] = get;
   buff[2] = 0;
-  frame_sleep(60);
-  ret     = iotputb("device/i2c_i/" SLAVE_ADDR_AXP192, buff, 2);
-  printf("ret=%d\n", i, ret);
+  ret     = iotputs("device/i2c_i/" SLAVE_ADDR_AXP192, buff);
   return 0;
 }
