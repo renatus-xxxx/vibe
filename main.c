@@ -31,13 +31,11 @@ int main( int argc, char *argv[]) {
     printf("AXP192(0x%s) not found.", SLAVE_ADDR_AXP192);
     return -1;
   }
-  unsigned char buff[16];
+  unsigned char buff[3];
   buff[0] = 0x12;
   buff[1] = 0;
   int ret = iotputs("device/i2c_i/" SLAVE_ADDR_AXP192, buff);
-  unsigned char get;
-  ret = iotgeti("device/i2c_i/" SLAVE_ADDR_AXP192);
-  get = (unsigned char)ret;
+  unsigned char get = (unsigned char)iotgeti("device/i2c_i/" SLAVE_ADDR_AXP192);
   if (argc < 2) {
     get |=  (1 << 3); // on
   } else {
