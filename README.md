@@ -1,5 +1,5 @@
 ## vibe
-MSX0Stack-VibrationMotor toggle tool on MSX0
+vibration motor toggle tool on MSX0
 
 ## how to use
 ```
